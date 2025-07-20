@@ -335,7 +335,7 @@ public class PEOutMessagePacket implements PacketListener {
 
             event.markForReEncode(true);
             UUID messageUUID = UUID.randomUUID();
-            ICPlayer determinedSender = ICPlayerFactory.getICPlayer((Player) event.getPlayer());
+            ICPlayer determinedSender = packetHandler.getDeterminedSenderFunction().apply(event);
 
             PacketSendEvent originalEvent = event.clone();
             SCHEDULING_SERVICE.execute(() -> {
