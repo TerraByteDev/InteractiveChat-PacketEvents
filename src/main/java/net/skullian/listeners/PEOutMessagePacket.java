@@ -311,7 +311,7 @@ public class PEOutMessagePacket implements PacketListener {
 
     @Override
     public void onPacketSend(PacketSendEvent event) {
-        System.out.println(event.getPacketType());
+        //System.out.println(event.getPacketType());
 
         if (!PACKET_HANDLERS.containsKey(event.getPacketType())) return;
 
@@ -327,15 +327,29 @@ public class PEOutMessagePacket implements PacketListener {
 
             InteractiveChat.messagesCounter.getAndIncrement();
 
+            // Temp Fix SystemChat - start
+            if (event.getPacketType() != PacketType.Play.Server.SYSTEM_CHAT_MESSAGE) {
+                return;
+            }
+
+            PacketWrapper<?> packet = event.getLastUsedWrapper();
+            if (!(packet instanceof WrapperPlayServerSystemChatMessage)) {
+                return;
+            }
+
+            net.kyori.adventure.text.Component nativeComponent = ((WrapperPlayServerSystemChatMessage) packet).getMessage();
+            if (nativeComponent.children().size() <= 0) {
+                return;
+            }
+            // Temp Fix SystemChat - end
+
             Player receiver = event.getPlayer();
 
-            if (!(event.getLastUsedWrapper() instanceof WrapperPlayServerSystemChatMessage)) {
-                event.setCancelled(true);
-            }
+             event.setCancelled(true);
 
             event.markForReEncode(true);
             UUID messageUUID = UUID.randomUUID();
-            ICPlayer determinedSender = ICPlayerFactory.getICPlayer((Player) event.getPlayer());
+            ICPlayer determinedSender = packetHandler.getDeterminedSenderFunction().apply(event);
 
             PacketSendEvent originalEvent = event.clone();
             SCHEDULING_SERVICE.execute(() -> {
