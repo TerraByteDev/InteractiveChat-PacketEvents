@@ -9,4 +9,4 @@ LegacyCommandPacketPriority: HIGH
 BungeecordPingPriority: NORMAL
 
 # Enable debug?
-Debug: true
+Debug: false

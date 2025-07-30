@@ -25,8 +25,6 @@ public class PacketEventsAsyncChatSendingExecutor extends AsyncChatSendingExecut
                 try {
                     if (out.getReciever().isOnline() && out.getPacket() != null) {
                         PacketWrapper<?> wrapper = (PacketWrapper<?>) out.getPacket();
-                        if (wrapper instanceof WrapperPlayServerSystemChatMessage) return;
-
                         PacketEvents.getAPI().getPlayerManager().sendPacketSilently(out.getReciever(), wrapper);
                     }
                 } catch (Exception e) {
