@@ -91,14 +91,14 @@ public class PERedispatchSignedPacket implements PacketListener {
             return;
         }
 
-        WrapperPlayClientChatMessage wrapper = new WrapperPlayClientChatMessage(event);
+        WrapperPlayClientChatMessage packet = new WrapperPlayClientChatMessage(event);
 
-        byte[] signature = wrapper.readMessageSignature().getBytes();
+        byte[] signature = packet.readMessageSignature().getBytes();
         if (signature != null && signature.length > 0) {
-            String command = "/" + wrapper.getMessage();
+            String command = "/" + packet.getMessage();
 
             event.setCancelled(true);
-            RedispatchedSignPacketHandler.redispatchCommand(player, command);
+            redispatchCommand(event, player, command);
         }
     }
 
