@@ -1,18 +1,17 @@
 package net.skullian.listeners;
 
 import com.github.retrooper.packetevents.event.PacketListener;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
-import com.github.retrooper.packetevents.protocol.chat.ChatTypes;
-import com.github.retrooper.packetevents.protocol.chat.message.ChatMessage_v1_19;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerChatMessage;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientChatCommand;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientChatMessage;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerServerData;
 import com.loohp.interactivechat.InteractiveChat;
 import com.loohp.interactivechat.listeners.packet.RedispatchedSignPacketHandler;
 import com.loohp.interactivechat.utils.MCVersion;
 import com.loohp.interactivechat.utils.ModernChatSigningUtils;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -30,24 +29,27 @@ public class PERedispatchSignedPacket implements PacketListener {
             sendDebug("HANDLING SERVER DATA PACKET: " + event.getPacketType());
 
             handleServerDataPacket(event);
-        } else {
-            if (shouldIgnoreEvent(event)) return;
-
-            if (event.getPacketType().equals(PacketType.Play.Client.CHAT_MESSAGE)) {
-                sendDebug("HANDLING CHAT MESSAGE PACKET: " + event.getPacketType());
-
-                handleChatPacket(event);
-            } else {
-                sendDebug("HANDLING CHAT COMMAND PACKET: " + event.getPacketType());
-
-                handleChatCommandPacket(event);
-            }
-
-            event.markForReEncode(true);
         }
     }
 
-    private static boolean shouldIgnoreEvent(PacketSendEvent event) {
+    @Override
+    public void onPacketReceive(PacketReceiveEvent event) {
+        if (shouldIgnoreEvent(event)) return;
+
+        if (event.getPacketType().equals(PacketType.Play.Client.CHAT_MESSAGE)) {
+            sendDebug("HANDLING CHAT MESSAGE PACKET: " + event.getPacketType());
+
+            handleChatPacket(event);
+        } else if (event.getPacketType().equals(PacketType.Play.Client.CHAT_COMMAND) || event.getPacketType().equals(PacketType.Play.Client.CHAT_COMMAND_UNSIGNED)) {
+            sendDebug("HANDLING CHAT COMMAND PACKET: " + event.getPacketType());
+
+            handleChatCommandPacket(event);
+        }
+
+        event.markForReEncode(true);
+    }
+
+    private static boolean shouldIgnoreEvent(PacketReceiveEvent event) {
         return event.isCancelled() || !InteractiveChat.protocolPlatform.hasChatSigning() || !packetTypes.contains(event.getPacketType());
     }
 
@@ -66,12 +68,12 @@ public class PERedispatchSignedPacket implements PacketListener {
         }
     }
 
-    private static void handleChatPacket(PacketSendEvent event) {
+    private static void handleChatPacket(PacketReceiveEvent event) {
         if (InteractiveChat.forceUnsignedChatPackets) {
             Player player = event.getPlayer();
-            WrapperPlayServerChatMessage packet = new WrapperPlayServerChatMessage(event);
+            WrapperPlayClientChatMessage packet = new WrapperPlayClientChatMessage(event);
 
-            String message = PlainTextComponentSerializer.plainText().serialize(packet.getMessage().getChatContent());
+            String message = packet.getMessage();
 
             sendDebug("PERedispatchSignedPacket HANDLING CHAT MESSAGE: " + message);
 
@@ -83,30 +85,25 @@ public class PERedispatchSignedPacket implements PacketListener {
         }
     }
 
-    private static void handleChatCommandPacket(PacketSendEvent event) {
+    private static void handleChatCommandPacket(PacketReceiveEvent event) {
         Player player = event.getPlayer();
 
-        if (InteractiveChat.forceUnsignedChatCommandPackets) {
-            if (event.getPacketType().equals(PacketType.Play.Server.CHAT_MESSAGE)) {
-                WrapperPlayServerChatMessage message = new WrapperPlayServerChatMessage(event);
-                if (message.getMessage().getType() != ChatTypes.MSG_COMMAND) return;
+        if (InteractiveChat.forceUnsignedChatCommandPackets && event.getPacketType().equals(PacketType.Play.Client.CHAT_COMMAND)) {
+            WrapperPlayClientChatCommand packet = new WrapperPlayClientChatCommand(event);
 
-                ChatMessage_v1_19 messageV119 = (ChatMessage_v1_19) message.getMessage();
-                if (messageV119.getSignature() != null) {
-                    String command = "/" + PlainTextComponentSerializer.plainText().serialize(messageV119.getChatContent());
-                    redispatchCommand(event, player, command);
-                }
-            }
+            String command = "/" + packet.getCommand();
+
+            redispatchCommand(event, player, command);
         }
     }
 
-    private static void redispatchCommand(PacketSendEvent event, Player player, String command) {
+    private static void redispatchCommand(PacketReceiveEvent event, Player player, String command) {
         event.setCancelled(true);
 
         RedispatchedSignPacketHandler.redispatchCommand(player, command);
     }
 
-    private static void redispatchChatMessage(PacketSendEvent event, Player player, String message) {
+    private static void redispatchChatMessage(PacketReceiveEvent event, Player player, String message) {
         if (!ModernChatSigningUtils.isChatMessageIllegal(message)) {
             event.setCancelled(true);
 
