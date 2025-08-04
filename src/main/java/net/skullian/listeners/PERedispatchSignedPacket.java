@@ -87,13 +87,13 @@ public class PERedispatchSignedPacket implements PacketListener {
     private static void handleChatCommandPacket(PacketReceiveEvent event) {
         Player player = event.getPlayer();
 
-        if (!InteractiveChat.forceUnsignedChatCommandPackets) {
+        if (!InteractiveChat.forceUnsignedChatCommandPackets || !event.getPacketType().equals(PacketType.Play.Client.CHAT_COMMAND)) {
             return;
         }
 
         WrapperPlayClientChatMessage packet = new WrapperPlayClientChatMessage(event);
 
-        byte[] signature = packet.readMessageSignature().getBytes();
+        byte[] signature = packet.readSignatureData().getSignature();
         if (signature != null && signature.length > 0) {
             String command = "/" + packet.getMessage();
 
