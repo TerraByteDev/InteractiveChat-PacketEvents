@@ -97,7 +97,6 @@ public class PERedispatchSignedPacket implements PacketListener {
         if (signature != null && signature.length > 0) {
             String command = "/" + packet.getMessage();
 
-            event.setCancelled(true);
             redispatchCommand(event, player, command);
         }
     }
