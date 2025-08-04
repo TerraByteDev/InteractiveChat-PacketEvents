@@ -90,6 +90,7 @@ public class PERedispatchSignedPacket implements PacketListener {
 
         if (InteractiveChat.forceUnsignedChatCommandPackets && event.getPacketType().equals(PacketType.Play.Client.CHAT_COMMAND)) {
             WrapperPlayClientChatCommand packet = new WrapperPlayClientChatCommand(event);
+
             String command = "/" + packet.getCommand();
 
             redispatchCommand(event, player, command);
