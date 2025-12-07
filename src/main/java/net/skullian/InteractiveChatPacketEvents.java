@@ -26,11 +26,10 @@ public final class InteractiveChatPacketEvents extends JavaPlugin {
         debug = InteractiveChatPacketEvents.instance.getConfig().getBoolean("Debug");
 
         ChatUtils.sendMessage("Initialising ProtocolProvider.");
-        InteractiveChat.protocolPlatform.initialize();
 
         getServer().getPluginManager().registerEvents(new UpdateListener(), this);
 
-        new CommandHandler();
+        //new CommandHandler();
     }
 
     @Override
