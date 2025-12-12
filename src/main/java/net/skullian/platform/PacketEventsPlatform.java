@@ -1,6 +1,7 @@
 package net.skullian.platform;
 
 import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.PacketEventsAPI;
 import com.github.retrooper.packetevents.event.ProtocolPacketEvent;
 import com.github.retrooper.packetevents.manager.server.ServerVersion;
 import com.github.retrooper.packetevents.wrapper.PacketWrapper;
@@ -19,18 +20,22 @@ public class PacketEventsPlatform implements ProtocolPlatform<ProtocolPacketEven
     private final PacketEventsPacketCreatorProvider creatorProvider;
 
     public PacketEventsPlatform() {
-        this.listenerProvider = new PacketEventsPacketListenerProvider();
+        this.listenerProvider = new PacketEventsPacketListenerProvider(this);
         this.creatorProvider = new PacketEventsPacketCreatorProvider();
+    }
+
+    public PacketEventsAPI<?> getPacketEventsAPI() {
+        return PacketEvents.getAPI();
     }
 
     @Override
     public boolean hasChatSigning() {
-        return PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_19_1);
+        return getPacketEventsAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_19_1);
     }
 
     @Override
     public int getProtocolVersion(Player player) {
-        return PacketEvents.getAPI().getProtocolManager().getClientVersion(player).getProtocolVersion();
+        return getPacketEventsAPI().getProtocolManager().getClientVersion(player).getProtocolVersion();
     }
 
     @Override
@@ -41,11 +46,10 @@ public class PacketEventsPlatform implements ProtocolPlatform<ProtocolPacketEven
     @Override
     public void sendServerPacket(Player player, PlatformPacket<?> platformPacket, boolean filtered) {
         PacketWrapper<?> packet = (PacketWrapper<?>) platformPacket.shallowClone().getHandle();
-
         if (filtered) {
-            PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
+            getPacketEventsAPI().getPlayerManager().sendPacket(player, packet);
         } else {
-            PacketEvents.getAPI().getPlayerManager().sendPacketSilently(player, packet);
+            getPacketEventsAPI().getPlayerManager().sendPacketSilently(player, packet);
         }
     }
 
@@ -66,7 +70,7 @@ public class PacketEventsPlatform implements ProtocolPlatform<ProtocolPacketEven
 
     @Override
     public Plugin getProtocolPlatformPlugin() {
-        return (Plugin) PacketEvents.getAPI().getPlugin();
+        return (Plugin) getPacketEventsAPI().getPlugin();
     }
 }
 

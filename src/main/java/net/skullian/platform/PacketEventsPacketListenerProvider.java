@@ -46,9 +46,15 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
         return PacketListenerPriority.valueOf(priority.name());
     }
 
+    private final PacketEventsPlatform platform;
+
+    public PacketEventsPacketListenerProvider(PacketEventsPlatform platform) {
+        this.platform = platform;
+    }
+
     @Override
     public void listenToHandshakeClientSetProtocol(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformHandshakeClientSetProtocolPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketReceive(@NotNull PacketReceiveEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -64,7 +70,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToStatusServerServerInfo(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformStatusServerServerInfoPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -80,7 +86,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToConfigurationClientClientInformation(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformConfigurationClientClientInformationPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketReceive(@NotNull PacketReceiveEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -107,7 +113,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToPlayServerTabComplete(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformPlayServerTabCompletePacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -123,7 +129,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToPlayClientChat(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformPlayClientChatPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketReceive(@NotNull PacketReceiveEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -139,7 +145,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToPlayChatCommand(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformPlayClientChatCommandPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketReceive(@NotNull PacketReceiveEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -166,7 +172,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToPlayServerServerData(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformPlayServerServerDataPacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
@@ -182,7 +188,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
 
     @Override
     public void listenToPlayServerUnifiedChatMessage(Plugin plugin, PlatformPacketListenerPriority priority, PlatformPacketEventListener<ProtocolPacketEvent, PacketWrapper<?>, PlatformPlayServerUnifiedChatMessagePacket<PacketWrapper<?>>> listener) {
-        PacketEvents.getAPI().getEventManager().registerListener(new PacketListener() {
+        platform.getPacketEventsAPI().getEventManager().registerListener(new PacketListener() {
             @Override
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
