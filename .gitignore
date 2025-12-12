@@ -25,6 +25,6 @@ replay_pid*
 
 # IDE
 .idea/
-*.iml
-dependency-reduced-pom.xml
-target/
+.gradle/
+libs/
+build/

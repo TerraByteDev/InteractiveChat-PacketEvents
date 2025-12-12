@@ -8,39 +8,27 @@ on:
 
 jobs:
   build:
-    name: Build with Maven
+    name: Build with Gradle
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache local Maven repository
-        id: cache-maven
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Setup JDK 21
+      - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: 21
           distribution: temurin
+          java-version: 17
+          cache: 'gradle'
 
-      - name: Set up Maven Wrapper
-        run: mvn --errors --batch-mode --show-version org.apache.maven.plugins:maven-wrapper-plugin:3.3.2:wrapper "-Dmaven=3.9.9"
-
-      - name: Build with Maven
+      - name: Build with Gradle
         run: |
-          ./mvnw clean package --batch-mode --no-transfer-progress --show-version
-          echo "BUILD_NAME=$(./mvnw help:evaluate -Dexpression=project.build.finalName -pl dist -q -DforceStdout)" >> $GITHUB_ENV
+          ./gradlew clean build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUILD_NAME }}
+          name: InteractiveChat-PacketEvents-${{ github.run_number }}
           path: |
-            target/InteractiveChat-PacketEvents-*.jar
+            libs/InteractiveChat-PacketEvents-*.jar
