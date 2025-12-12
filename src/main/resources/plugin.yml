@@ -5,6 +5,7 @@ api-version: 1.13
 description: Add PacketEvents support to InteractiveChat
 depend: [InteractiveChat, packetevents]
 authors: [Skullians, LOOHP]
+folia-supported: true
 
 libraries:
   - net.kyori:adventure-text-serializer-plain:4.18.0

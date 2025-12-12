@@ -1,5 +1,6 @@
 package net.skullian.updater;
 
+import com.loohp.platformscheduler.Scheduler;
 import net.skullian.InteractiveChatPacketEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class UpdateListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(InteractiveChatPacketEvents.instance, () -> {
+        Scheduler.runTaskLaterAsynchronously(InteractiveChatPacketEvents.instance, () -> {
             Player player = event.getPlayer();
             if (player.hasPermission("interactivechatpacketevents.checkupdate")) {
                 checkUpdate(player);
