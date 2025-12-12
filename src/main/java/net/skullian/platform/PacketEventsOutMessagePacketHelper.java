@@ -59,6 +59,7 @@ import java.util.function.UnaryOperator;
 
 import static com.loohp.interactivechat.listeners.packet.MessagePacketHandler.*;
 
+@SuppressWarnings("deprecation")
 public class PacketEventsOutMessagePacketHelper {
     protected static final Map<PacketTypeCommon, PacketEventsHandler<?>> PACKET_HANDLERS = new HashMap<>();
 
@@ -75,8 +76,10 @@ public class PacketEventsOutMessagePacketHelper {
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
+
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
+
             packet.setMessage((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
             return new PacketWriterResult(longerThanMaxLength, json.length(), sender);
         }, WrapperPlayServerDisguisedChat::new, p -> new WrapperPlayServerDisguisedChat(p.getMessage(), p.getChatFormatting())));

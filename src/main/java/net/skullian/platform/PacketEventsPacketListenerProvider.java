@@ -43,21 +43,7 @@ import org.jetbrains.annotations.NotNull;
 public class PacketEventsPacketListenerProvider implements PlatformPacketListenerProvider<ProtocolPacketEvent, PacketWrapper<?>> {
 
     private static PacketListenerPriority c(PlatformPacketListenerPriority priority) {
-        switch (priority) {
-            case LOWEST:
-                return PacketListenerPriority.LOWEST;
-            case LOW:
-                return PacketListenerPriority.LOW;
-            case NORMAL:
-                return PacketListenerPriority.NORMAL;
-            case HIGH:
-                return PacketListenerPriority.HIGH;
-            case HIGHEST:
-                return PacketListenerPriority.HIGHEST;
-            case MONITOR:
-                return PacketListenerPriority.MONITOR;
-        }
-        throw new IllegalArgumentException("Unknown priority " + priority.name());
+        return PacketListenerPriority.valueOf(priority.name());
     }
 
     @Override
@@ -104,6 +90,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
                         e.setLastUsedWrapper(wrapper);
                         return new PacketEventsConfigurationClientClientInformationPacket(wrapper);
                     }));
+
                     PacketWrapper<?> wrapper = event.getLastUsedWrapper();
                     if (wrapper != null) {
                         event.setByteBuf(wrapper);
@@ -162,6 +149,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
                         e.setLastUsedWrapper(wrapper);
                         return new PacketEventsPlayClientChatCommandPacket(wrapper);
                     }));
+
                     PacketWrapper<?> wrapper = event.getLastUsedWrapper();
                     if (wrapper != null) {
                         event.setByteBuf(wrapper);
@@ -199,6 +187,7 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
                 PacketEventsOutMessagePacketHelper.PacketEventsHandler<?> handler = PacketEventsOutMessagePacketHelper.PACKET_HANDLERS.get(type);
+
                 if (handler != null) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         PacketWrapper<?> wrapper = handler.getWrapper().apply((PacketSendEvent) e);

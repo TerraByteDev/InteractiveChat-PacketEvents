@@ -41,7 +41,7 @@ public class PacketEventsPlatform implements ProtocolPlatform<ProtocolPacketEven
     @Override
     public void sendServerPacket(Player player, PlatformPacket<?> platformPacket, boolean filtered) {
         PacketWrapper<?> packet = (PacketWrapper<?>) platformPacket.shallowClone().getHandle();
-        System.out.println(packet);
+
         if (filtered) {
             PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet);
         } else {

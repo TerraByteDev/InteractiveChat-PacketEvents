@@ -36,24 +36,17 @@ public class PacketEventsPacketCreatorProvider implements PlatformPacketCreatorP
     public PlatformPlayServerTabCompletePacket<PacketWrapper<?>> createPlayServerTabCompletePacket(int id, Object suggestions) {
         Suggestions mojangSuggestions = (Suggestions) suggestions;
         WrapperPlayServerTabComplete.CommandRange commandRange = new WrapperPlayServerTabComplete.CommandRange(mojangSuggestions.getRange().getStart(), mojangSuggestions.getRange().getEnd());
+
         List<WrapperPlayServerTabComplete.CommandMatch> commandMatches = mojangSuggestions.getList().stream()
                 .map((m) -> new WrapperPlayServerTabComplete.CommandMatch(m.getText(), m.getTooltip() == null ? null : BukkitComponentSerializer.gson().deserialize(ChatComponentType.IChatBaseComponent.toJsonString(m.getTooltip(), null)))).collect(Collectors.toList());
+
         return new PacketEventsPlayServerTabCompletePacket(new WrapperPlayServerTabComplete(id, commandRange, commandMatches));
     }
 
     @Override
     public PlatformPlayServerCustomChatCompletionPacket<PacketWrapper<?>> createPlayServerCustomChatCompletionPacket(CustomTabCompletionAction action, List<String> list) {
-        ChatCompletionAction packetEventsAction;
-        switch (action) {
-            case ADD:
-                packetEventsAction = ChatCompletionAction.ADD;
-                break;
-            case REMOVE:
-                packetEventsAction = ChatCompletionAction.REMOVE;
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown action " + action.name());
-        }
+        ChatCompletionAction packetEventsAction = ChatCompletionAction.valueOf(action.name());
+
         return new PacketEventsPlayServerCustomChatCompletionPacket(new WrapperPlayServerCustomChatCompletions(packetEventsAction, list));
     }
 
@@ -61,16 +54,19 @@ public class PacketEventsPacketCreatorProvider implements PlatformPacketCreatorP
     @Override
     public PlatformPlayServerSystemChatPacket<PacketWrapper<?>> createPlayServerSystemChatPacket(UUID uuid, Component component) {
         String json = ChatComponentType.AdventureComponent.toJsonString(component, null);
+
         if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_19)) {
             return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(false, json));
         } else {
             net.kyori.adventure.text.@NotNull Component nativeComponent = BukkitComponentSerializer.gson().deserialize(json);
             ChatMessage message;
+
             if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_16)) {
                 message = new ChatMessage_v1_16(nativeComponent, ChatTypes.SYSTEM, uuid);
             } else {
                 message = new ChatMessageLegacy(nativeComponent, ChatTypes.SYSTEM);
             }
+
             return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerChatMessage(message));
         }
     }
