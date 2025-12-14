@@ -1,6 +1,6 @@
 # InteractiveChat-PacketEvents (WIP)
 An addon plugin for InteractiveChat to support PacketEvents instead of ProtocolLib.\
-This is a very simple plugin that implements all the code seen [here](https://github.com/Skullians/InteractiveChatPacketEvents/tree/master/common/src/main/java/com/loohp/interactivechat/listeners/packet).\
+This is a very simple plugin that implements all the code seen [here](https://github.com/LOOHP/InteractiveChat/tree/master/common/src/main/java/com/loohp/interactivechat/platform).\
 Very little modifications to code have been made, apart from making it support PacketEvents.
 
 > [!WARNING]
