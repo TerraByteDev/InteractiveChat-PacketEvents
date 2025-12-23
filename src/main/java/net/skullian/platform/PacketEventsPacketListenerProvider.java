@@ -1,6 +1,5 @@
 package net.skullian.platform;
 
-import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketReceiveEvent;
@@ -93,14 +92,8 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
                 if (type == PacketType.Configuration.Client.CLIENT_SETTINGS) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         WrapperConfigClientSettings wrapper = new WrapperConfigClientSettings((PacketReceiveEvent) e);
-                        e.setLastUsedWrapper(wrapper);
                         return new PacketEventsConfigurationClientClientInformationPacket(wrapper);
                     }));
-
-                    PacketWrapper<?> wrapper = event.getLastUsedWrapper();
-                    if (wrapper != null) {
-                        event.setByteBuf(wrapper);
-                    }
                 } else if (type == PacketType.Play.Client.CLIENT_SETTINGS) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         WrapperPlayClientSettings wrapper = new WrapperPlayClientSettings((PacketReceiveEvent) e);
@@ -152,14 +145,8 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
                 if (type == PacketType.Play.Client.CHAT_COMMAND) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         WrapperPlayClientChatCommand wrapper = new WrapperPlayClientChatCommand((PacketReceiveEvent) e);
-                        e.setLastUsedWrapper(wrapper);
                         return new PacketEventsPlayClientChatCommandPacket(wrapper);
                     }));
-
-                    PacketWrapper<?> wrapper = event.getLastUsedWrapper();
-                    if (wrapper != null) {
-                        event.setByteBuf(wrapper);
-                    }
                 } else if (type == PacketType.Play.Client.CHAT_COMMAND_UNSIGNED) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         WrapperPlayClientChatCommandUnsigned wrapper = new WrapperPlayClientChatCommandUnsigned((PacketReceiveEvent) e);
@@ -193,7 +180,6 @@ public class PacketEventsPacketListenerProvider implements PlatformPacketListene
             public void onPacketSend(@NotNull PacketSendEvent event) {
                 PacketTypeCommon type = event.getPacketType();
                 PacketEventsOutMessagePacketHelper.PacketEventsHandler<?> handler = PacketEventsOutMessagePacketHelper.PACKET_HANDLERS.get(type);
-
                 if (handler != null) {
                     listener.handle(new PacketEventsPacketEvent<>(event, e -> {
                         PacketWrapper<?> wrapper = handler.getWrapper().apply((PacketSendEvent) e);
