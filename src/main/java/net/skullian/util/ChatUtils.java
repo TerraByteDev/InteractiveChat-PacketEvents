@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
+// to be brutally honest, this is just bloat, but I can't actually be bothered to remove it
 public class ChatUtils {
 
     public static BukkitAudiences audience;

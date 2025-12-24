@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -28,8 +27,7 @@ public class GithubUtils {
     // https://docs.github.com/en/rest/commits/commits#compare-two-commits
     private static final String API_COMPARE = API_BASE + "TerraByteDev/InteractiveChat-PacketEvents/compare/%s...%s";
 
-    private GithubUtils() {
-    }
+    private GithubUtils() {}
 
     public static GithubBuildInfo lookupLatestRelease() throws IOException {
         URL url = new URL(API_LATEST_RELEASE);
@@ -47,10 +45,9 @@ public class GithubUtils {
     }
 
     private static GithubBuildInfo parseBuildInfo(BufferedReader reader) {
-        JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
         String id = json.get("tag_name").getAsString();
-        Instant buildTime = Instant.parse(json.get("published_at").getAsString());
-        return new GithubBuildInfo(id, id, buildTime, true);
+        return new GithubBuildInfo(id, id, MAIN_BRANCH, true);
     }
 
     public static GitHubStatusLookup compare(@NotNull String base, @NotNull String head) throws IOException {

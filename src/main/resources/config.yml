@@ -1,12 +1,4 @@
 # Welcome to the ICPE Config.
-# This config allows you to adjust the listener priorities on all packets.
-# Support priorities (case-sensitive): LOWEST, LOW, NORMAL, HIGH, HIGHEST, MONITOR
-
-ChatListenerPriority: HIGHEST
-ClientSettingsPriority: NORMAL
-SignedPacketPriority: HIGHEST
-LegacyCommandPacketPriority: HIGH
-BungeecordPingPriority: NORMAL
 
 # Enable debug?
 Debug: true

@@ -1,74 +1,47 @@
 package net.skullian.util;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import lombok.Getter;
 import net.skullian.InteractiveChatPacketEvents;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.Objects;
+import java.util.Properties;
 
-public class GithubBuildInfo {
+public record GithubBuildInfo(String id, String name, String branch, boolean stable) {
     public static final GithubBuildInfo CURRENT = readBuildInfo();
 
-    private final String id;
-    private final String name;
-    private final Instant buildTime;
-    @Getter
-    private final boolean stable;
-
-    public GithubBuildInfo(String id, String name, Instant buildTime, boolean stable) {
+    public GithubBuildInfo(String id, String name, String branch, boolean stable) {
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
-        this.buildTime = Objects.requireNonNull(buildTime);
+        this.branch = Objects.requireNonNull(branch);
         this.stable = stable;
-    }
-
-    public @NotNull String getId() {
-        return id;
-    }
-
-    public @NotNull String getName() {
-        return name;
-    }
-
-    public @NotNull Instant getBuildTime() {
-        return buildTime;
     }
 
     @Override
     public String toString() {
-        return "BuildInfo{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", buildTime=" + buildTime + ", stable=" + stable + '}';
+        return "GithubBuildInfo{" + "id='" + id + "', name='" + name + "', branch='" + branch + ", stable=" + stable + '}';
     }
 
     private static GithubBuildInfo readBuildInfo() {
-        try (InputStream in = InteractiveChatPacketEvents.instance.getResource("version.json")) {
+        try (InputStream in = InteractiveChatPacketEvents.instance.getResource("version.properties")) {
             if (in == null)
                 throw new IOException("No input");
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-                return parseBuildInfo(reader);
-            }
+
+            Properties properties = new Properties();
+            properties.load(in);
+            return parseBuildInfo(properties);
         } catch (IOException e) {
             throw new AssertionError("Missing version information!", e);
         }
     }
 
-    private static GithubBuildInfo parseBuildInfo(BufferedReader reader) {
-        JsonObject json = new JsonParser().parse(reader).getAsJsonObject();
+    private static GithubBuildInfo parseBuildInfo(Properties properties) {
+        String id = properties.getProperty("git.commit.id.abbrev");
+        String name = properties.getProperty("git.build.version");
+        String branch = properties.getProperty("git.branch");
 
-        String id = json.get("git.commit.id.abbrev").getAsString();
-        String name = json.get("git.build.version").getAsString();
-        Instant buildTime = Instant.parse(json.get("git.build.time").getAsString());
-        // (1): <version core> "-" <pre-release>
-        // (2): <version core> "+" <build>
         boolean stable = name.indexOf('-') == -1 && name.indexOf('+') == -1;
 
-        return new GithubBuildInfo(id, name, buildTime, stable);
+        return new GithubBuildInfo(id, name, branch, stable);
     }
 }

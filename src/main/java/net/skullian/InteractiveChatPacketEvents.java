@@ -1,7 +1,6 @@
 package net.skullian;
 
 import com.loohp.interactivechat.InteractiveChat;
-import net.skullian.command.CommandHandler;
 import net.skullian.platform.PacketEventsPlatform;
 import net.skullian.updater.UpdateListener;
 import net.skullian.util.ChatUtils;
@@ -26,11 +25,8 @@ public final class InteractiveChatPacketEvents extends JavaPlugin {
         debug = InteractiveChatPacketEvents.instance.getConfig().getBoolean("Debug");
 
         ChatUtils.sendMessage("Initialising ProtocolProvider.");
-        InteractiveChat.protocolPlatform.initialize();
 
         getServer().getPluginManager().registerEvents(new UpdateListener(), this);
-
-        new CommandHandler();
     }
 
     @Override

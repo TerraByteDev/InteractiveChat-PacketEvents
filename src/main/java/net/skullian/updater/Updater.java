@@ -22,12 +22,12 @@ public class Updater implements Listener {
         UpdateStatus updateStatus = new UpdateStatus(false, false);
 
         try {
-            if (currentBuild.isStable()) {
+            if (currentBuild.stable()) {
                 latestBuild = GithubUtils.lookupLatestRelease();
-                lookupStatus = GithubUtils.compare(latestBuild.getId(), currentBuild.getId());
+                lookupStatus = GithubUtils.compare(latestBuild.id(), currentBuild.id());
             } else {
                 latestBuild = null;
-                lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.getId());
+                lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.id());
             }
         } catch (IOException error) {
             ChatUtils.sendMessage("<red>Failed to fetch latest version: " + error, senders);
@@ -36,10 +36,10 @@ public class Updater implements Listener {
         }
 
         if (lookupStatus.isBehind()) {
-            if (currentBuild.isStable()) {
-                String url = "https://github.com/TerraByteDev/InteractiveChat-PacketEvents/releases/tag/" + latestBuild.getId();
+            if (currentBuild.stable()) {
+                String url = "https://github.com/TerraByteDev/InteractiveChat-PacketEvents/releases/tag/" + latestBuild.id();
 
-                ChatUtils.sendMessage("<green>A new version of InteractiveChat-PacketEvents is available: " + latestBuild.getId() + "!", senders);
+                ChatUtils.sendMessage("<green>A new version of InteractiveChat-PacketEvents is available: " + latestBuild.id() + "!", senders);
                 ChatUtils.sendMessage("<grey>Download at: <click:open_url:'" + url + "'>" + url + "</click>", senders);
             } else {
                 ChatUtils.sendMessage("<yellow>You are running a development build of InteractiveChat-PacketEvents!\nThe latest available development build is " + String.format(Locale.ROOT, "%,d", lookupStatus.getDistance()) + " commits ahead.", senders);

@@ -1,15 +1,15 @@
 name: InteractiveChat-PacketEvents
-version: '1.0.7'
+version: '1.1.0'
 main: net.skullian.InteractiveChatPacketEvents
 api-version: 1.13
 description: Add PacketEvents support to InteractiveChat
 depend: [InteractiveChat, packetevents]
+authors: [Skullians, LOOHP]
+folia-supported: true
 
 libraries:
   - net.kyori:adventure-text-serializer-plain:4.18.0
   - net.kyori:adventure-text-serializer-legacy:4.18.0
   - net.kyori:adventure-platform-bukkit:4.3.4
   - net.kyori:adventure-text-minimessage:4.18.0
-  - org.incendo:cloud-paper:2.0.0-beta.10
-  - org.incendo:cloud-annotations:2.0.0
   - net.bytebuddy:byte-buddy:1.17.6

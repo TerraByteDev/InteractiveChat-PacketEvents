@@ -1,10 +1,10 @@
 # InteractiveChat-PacketEvents (WIP)
 An addon plugin for InteractiveChat to support PacketEvents instead of ProtocolLib.\
-This is a very simple plugin that implements all the code seen [here](https://github.com/Skullians/InteractiveChatPacketEvents/tree/master/common/src/main/java/com/loohp/interactivechat/listeners/packet).\
+This is a very simple plugin that implements all the code seen [here](https://github.com/LOOHP/InteractiveChat/tree/master/common/src/main/java/com/loohp/interactivechat/platform).\
 Very little modifications to code have been made, apart from making it support PacketEvents.
 
 > [!WARNING]
-> This plugin **REQUIRES** v4.3.0.0 of InteractiveChat, or higher.\
+> This plugin **REQUIRES** v4.3.5.0 of InteractiveChat, or higher.\
 > This plugin will NOT boot otherwise.
 
 
@@ -27,5 +27,5 @@ You can see the corresponding PR here: https://github.com/LOOHP/InteractiveChat/
 1. Install the latest version of PacketEvents, and this plugin.
 2. Start your server
 
-## Permissions and Commands
-`/interactivechatpacketevents checkupdate` - Requires the `interactivechatpacketevents.checkupdate` command (or OP). `/icpe checkupdate` also works.
+## Permissions
+Requires the `interactivechatpacketevents.checkupdate` permission to check for updates on join.
