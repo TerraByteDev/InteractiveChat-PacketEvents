@@ -8,7 +8,7 @@ packetevents = "2.10.1"
 interactivechat = "4.3.5.0"
 bytebuddy = "1.18.3"
 
-adventure = "4.25.0"
+adventure = "4.26.1"
 adventure-platform = "4.4.1"
 
 lombok="1.18.42"
