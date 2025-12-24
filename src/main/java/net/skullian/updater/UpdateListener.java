@@ -1,6 +1,6 @@
 package net.skullian.updater;
 
-import com.loohp.platformscheduler.Scheduler;
+import com.loohp.interactivechat.libs.com.loohp.platformscheduler.Scheduler;
 import net.skullian.InteractiveChatPacketEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
