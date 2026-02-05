@@ -13,7 +13,7 @@ adventure-platform = "4.4.1"
 
 lombok="1.18.42"
 shadow="9.3.0"
-properties = "2.5.4"
+properties = "2.5.5"
 
 [libraries]
 packetevents = { module = "com.github.retrooper:packetevents-spigot", version.ref = "packetevents" }
