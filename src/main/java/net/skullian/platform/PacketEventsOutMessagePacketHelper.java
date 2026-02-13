@@ -192,12 +192,10 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.SYSTEM_CHAT_MESSAGE, new PacketEventsHandler<>(event -> {
             return InteractiveChat.chatListener;
-        }, event -> {
-            return ICPlayerFactory.getICPlayer((Player) event.getPlayer());
         }, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
             Component component = type.convertFrom(packet.getMessage(), player);
-            return new PacketAccessorResult(component, type, 0, true);
+            return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             if (InteractiveChat.chatPreviewRemoveClickAndHover) {
                 component = ComponentStyling.stripEvents(component);
