@@ -6,7 +6,7 @@ spigot-api="1.20.6-R0.1-SNAPSHOT"
 
 packetevents = "2.11.2"
 interactivechat = "4.3.5.0"
-bytebuddy = "1.18.3"
+bytebuddy = "1.18.4"
 
 adventure = "4.26.1"
 adventure-platform = "4.4.1"
