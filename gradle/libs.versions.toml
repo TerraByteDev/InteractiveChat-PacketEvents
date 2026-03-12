@@ -11,7 +11,7 @@ bytebuddy = "1.18.4"
 adventure = "4.26.1"
 adventure-platform = "4.4.1"
 
-lombok="1.18.42"
+lombok="1.18.44"
 shadow="9.3.1"
 properties = "2.5.5"
 
