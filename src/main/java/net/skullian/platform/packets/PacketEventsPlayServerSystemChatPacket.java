@@ -18,9 +18,9 @@ public class PacketEventsPlayServerSystemChatPacket extends PlatformPlayServerSy
         if (handle instanceof WrapperPlayServerSystemChatMessage) {
             WrapperPlayServerSystemChatMessage message = (WrapperPlayServerSystemChatMessage) handle;
             if (message.getType() == null) {
-                return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(message.isOverlay(), message.getMessageJson()));
+                return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(message.isOverlay(), message.getMessage()));
             } else {
-                return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(message.getType(), message.getMessageJson()));
+                return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(message.getType(), message.getMessage()));
             }
         } else {
             WrapperPlayServerChatMessage message = (WrapperPlayServerChatMessage) handle;

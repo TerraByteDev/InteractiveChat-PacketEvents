@@ -24,11 +24,11 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.skullian.platform.packets.PacketEventsPlayServerCustomChatCompletionPacket;
 import net.skullian.platform.packets.PacketEventsPlayServerSystemChatPacket;
 import net.skullian.platform.packets.PacketEventsPlayServerTabCompletePacket;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import net.skullian.util.PacketEventsComponentUtils;
 
 public class PacketEventsPacketCreatorProvider implements PlatformPacketCreatorProvider<PacketWrapper<?>> {
 
@@ -54,19 +54,16 @@ public class PacketEventsPacketCreatorProvider implements PlatformPacketCreatorP
     @Override
     public PlatformPlayServerSystemChatPacket<PacketWrapper<?>> createPlayServerSystemChatPacket(UUID uuid, Component component) {
         String json = ChatComponentType.AdventureComponent.toJsonString(component, null);
-
+        net.kyori.adventure.text.Component nativeComponent = PacketEventsComponentUtils.deserializePacketEventsComponent(json);
         if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_19)) {
-            return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(false, json));
+            return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerSystemChatMessage(false, nativeComponent));
         } else {
-            net.kyori.adventure.text.@NotNull Component nativeComponent = GsonComponentSerializer.gson().deserialize(json);
             ChatMessage message;
-
             if (InteractiveChat.version.isNewerOrEqualTo(MCVersion.V1_16)) {
                 message = new ChatMessage_v1_16(nativeComponent, ChatTypes.SYSTEM, uuid);
             } else {
                 message = new ChatMessageLegacy(nativeComponent, ChatTypes.SYSTEM);
             }
-
             return new PacketEventsPlayServerSystemChatPacket(new WrapperPlayServerChatMessage(message));
         }
     }

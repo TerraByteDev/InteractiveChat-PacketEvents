@@ -28,6 +28,7 @@ import com.loohp.interactivechat.utils.ChatComponentType;
 import com.loohp.interactivechat.utils.ComponentStyling;
 import com.loohp.interactivechat.utils.InteractiveChatComponentSerializer;
 import com.loohp.interactivechat.utils.MCVersion;
+import net.skullian.util.PacketEventsComponentUtils;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -60,7 +61,7 @@ public class PacketEventsOutMessagePacketHelper {
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
 
-            packet.setMessage((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setMessage(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             return new PacketWriterResult(longerThanMaxLength, json.length(), sender);
         }, WrapperPlayServerDisguisedChat::new, p -> new WrapperPlayServerDisguisedChat(p.getMessage(), p.getChatFormatting())));
 
@@ -130,7 +131,7 @@ public class PacketEventsOutMessagePacketHelper {
                     ((ChatMessage_v1_16) chatMessage).setSenderUUID(sender);
                 }
             }
-            net.kyori.adventure.text.Component bukkitComponent = (net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB);
+            net.kyori.adventure.text.Component bukkitComponent = PacketEventsComponentUtils.deserializePacketEventsComponent(json);
             if (chatMessage instanceof ChatMessage_v1_21_5) {
                 ((ChatMessage_v1_21_5) chatMessage).setUnsignedChatContent(bukkitComponent);
             } else if (chatMessage instanceof ChatMessage_v1_19_3) {
@@ -182,7 +183,7 @@ public class PacketEventsOutMessagePacketHelper {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
-            packet.setMessage((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setMessage(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             if (sender == null) {
                 sender = UUID_NIL;
             }
@@ -203,7 +204,7 @@ public class PacketEventsOutMessagePacketHelper {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
-            packet.setMessage((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setMessage(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             if (sender == null) {
                 sender = UUID_NIL;
             }
@@ -226,7 +227,7 @@ public class PacketEventsOutMessagePacketHelper {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
-            packet.setTitle((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setTitle(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             if (sender == null) {
                 sender = UUID_NIL;
             }
@@ -243,7 +244,7 @@ public class PacketEventsOutMessagePacketHelper {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
-            packet.setSubtitle((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setSubtitle(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             if (sender == null) {
                 sender = UUID_NIL;
             }
@@ -260,7 +261,7 @@ public class PacketEventsOutMessagePacketHelper {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
-            packet.setActionBarText((net.kyori.adventure.text.Component) type.convertTo(component, legacyRGB));
+            packet.setActionBarText(PacketEventsComponentUtils.deserializePacketEventsComponent(json));
             if (sender == null) {
                 sender = UUID_NIL;
             }
