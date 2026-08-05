@@ -28,7 +28,7 @@ public class Updater implements Listener {
                     updateStatus.setUpToDate(true);
                     return updateStatus;
                 }
-                lookupStatus = GithubUtils.compare(latestBuild.id(), currentBuild.id());
+                lookupStatus = GithubUtils.compare(latestBuild.name(), currentBuild.name());
             } else {
                 latestBuild = null;
                 lookupStatus = GithubUtils.compare(GithubUtils.MAIN_BRANCH, currentBuild.id());
