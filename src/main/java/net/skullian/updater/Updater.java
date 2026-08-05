@@ -24,6 +24,10 @@ public class Updater implements Listener {
         try {
             if (currentBuild.stable()) {
                 latestBuild = GithubUtils.lookupLatestRelease();
+                if (isSameStableVersion(currentBuild, latestBuild)) {
+                    updateStatus.setUpToDate(true);
+                    return updateStatus;
+                }
                 lookupStatus = GithubUtils.compare(latestBuild.id(), currentBuild.id());
             } else {
                 latestBuild = null;
@@ -48,6 +52,10 @@ public class Updater implements Listener {
 
         updateStatus.setUpToDate(!lookupStatus.isBehind());
         return updateStatus;
+    }
+
+    private static boolean isSameStableVersion(GithubBuildInfo currentBuild, GithubBuildInfo latestBuild) {
+        return currentBuild.name().equals(latestBuild.name()) || currentBuild.id().equals(latestBuild.id());
     }
 
     @AllArgsConstructor
