@@ -22,21 +22,25 @@ public class GithubUtils {
     private static final String API_BASE = "https://api.github.com/repos/";
 
     // https://docs.github.com/en/rest/releases/releases#get-the-latest-release
-    private static final String API_LATEST_RELEASE = API_BASE + "TerraByteDev/InteractiveChat-PacketEvents/releases/latest";
+    private static final String API_LATEST_RELEASE = API_BASE
+            + "TerraByteDev/InteractiveChat-PacketEvents/releases/latest";
 
     // https://docs.github.com/en/rest/commits/commits#compare-two-commits
     private static final String API_COMPARE = API_BASE + "TerraByteDev/InteractiveChat-PacketEvents/compare/%s...%s";
 
-    private GithubUtils() {}
+    private GithubUtils() {
+    }
 
     public static GithubBuildInfo lookupLatestRelease() throws IOException {
         URL url = new URL(API_LATEST_RELEASE);
         HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+        https.setConnectTimeout(5000);
+        https.setReadTimeout(5000);
         final int responseCode = https.getResponseCode();
 
         if (isSuccessfulResponse(responseCode)) {
             try (InputStream in = https.getInputStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                 return parseBuildInfo(reader);
             }
         } else {
@@ -53,11 +57,13 @@ public class GithubUtils {
     public static GitHubStatusLookup compare(@NotNull String base, @NotNull String head) throws IOException {
         URL url = new URL(String.format(API_COMPARE, base, head));
         HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+        https.setConnectTimeout(5000);
+        https.setReadTimeout(5000);
         final int responseCode = https.getResponseCode();
 
         if (isSuccessfulResponse(responseCode)) {
             try (InputStream in = https.getInputStream();
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                 return parseComparison(reader);
             }
         } else if (responseCode == HttpsURLConnection.HTTP_NOT_FOUND) {
@@ -119,7 +125,8 @@ public class GithubUtils {
         // Internal types
 
         /**
-         * Represents the case when a BASEHEAD is unknown to GitHub, private builds, for example.
+         * Represents the case when a BASEHEAD is unknown to GitHub, private builds, for
+         * example.
          */
         UNKNOWN,
 

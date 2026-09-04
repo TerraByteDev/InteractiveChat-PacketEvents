@@ -25,6 +25,8 @@ public class UpdateListener implements Listener {
 
     @EventHandler
     public void onStart(ServerLoadEvent event) {
-        checkUpdate(Bukkit.getConsoleSender());
+        Scheduler.runTaskAsynchronously(
+                InteractiveChatPacketEvents.instance,
+                () -> checkUpdate(Bukkit.getConsoleSender()));
     }
 }
