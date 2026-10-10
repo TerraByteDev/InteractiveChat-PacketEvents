@@ -147,18 +147,19 @@ public class PacketEventsOutMessagePacketHelper {
         }, WrapperPlayServerChatMessage::new, p -> {
             ChatMessage chatMessage = p.getMessage();
             ChatMessage clonedChatMessage;
+            // Preserve unsigned content: getChatContent() only contains the raw signed text.
             if (chatMessage instanceof ChatMessage_v1_21_5) {
                 ChatMessage_v1_21_5 c = (ChatMessage_v1_21_5) chatMessage;
-                clonedChatMessage = new ChatMessage_v1_21_5(c.getGlobalIndex(), c.getSenderUUID(), c.getIndex(), Arrays.copyOf(c.getSignature(), c.getSignature().length), c.getPlainContent(), c.getTimestamp(), c.getSalt(), c.getLastSeenMessagesPacked(), c.getChatContent(), c.getFilterMask(), c.getChatFormatting());
+                clonedChatMessage = new ChatMessage_v1_21_5(c.getGlobalIndex(), c.getSenderUUID(), c.getIndex(), copySignature(c.getSignature()), c.getPlainContent(), c.getTimestamp(), c.getSalt(), c.getLastSeenMessagesPacked(), c.getUnsignedChatContent().orElse(null), c.getFilterMask(), c.getChatFormatting());
             } else if (chatMessage instanceof ChatMessage_v1_19_3) {
                 ChatMessage_v1_19_3 c = (ChatMessage_v1_19_3) chatMessage;
-                clonedChatMessage = new ChatMessage_v1_19_3(c.getSenderUUID(), c.getIndex(), Arrays.copyOf(c.getSignature(), c.getSignature().length), c.getPlainContent(), c.getTimestamp(), c.getSalt(), c.getLastSeenMessagesPacked(), c.getChatContent(), c.getFilterMask(), c.getChatFormatting());
+                clonedChatMessage = new ChatMessage_v1_19_3(c.getSenderUUID(), c.getIndex(), copySignature(c.getSignature()), c.getPlainContent(), c.getTimestamp(), c.getSalt(), c.getLastSeenMessagesPacked(), c.getUnsignedChatContent().orElse(null), c.getFilterMask(), c.getChatFormatting());
             } else if (chatMessage instanceof ChatMessage_v1_19_1) {
                 ChatMessage_v1_19_1 c = (ChatMessage_v1_19_1) chatMessage;
-                clonedChatMessage = new ChatMessage_v1_19_1(c.getPlainContent(), c.getChatContent(), c.getUnsignedChatContent(), c.getSenderUUID(), c.getChatFormatting(), Arrays.copyOf(c.getPreviousSignature(), c.getPreviousSignature().length), Arrays.copyOf(c.getSignature(), c.getSignature().length), c.getTimestamp(), c.getSalt(), c.getLastSeenMessages(), c.getFilterMask());
+                clonedChatMessage = new ChatMessage_v1_19_1(c.getPlainContent(), c.getChatContent(), c.getUnsignedChatContent(), c.getSenderUUID(), c.getChatFormatting(), copySignature(c.getPreviousSignature()), copySignature(c.getSignature()), c.getTimestamp(), c.getSalt(), c.getLastSeenMessages(), c.getFilterMask());
             } else if (chatMessage instanceof ChatMessage_v1_19) {
                 ChatMessage_v1_19 c = (ChatMessage_v1_19) chatMessage;
-                clonedChatMessage = new ChatMessage_v1_19(c.getChatContent(), c.getUnsignedChatContent(), c.getType(), c.getSenderUUID(), c.getSenderDisplayName(), c.getTeamName(), c.getTimestamp(), c.getSalt(), Arrays.copyOf(c.getSignature(), c.getSignature().length));
+                clonedChatMessage = new ChatMessage_v1_19(c.getChatContent(), c.getUnsignedChatContent(), c.getType(), c.getSenderUUID(), c.getSenderDisplayName(), c.getTeamName(), c.getTimestamp(), c.getSalt(), copySignature(c.getSignature()));
             } else if (chatMessage instanceof ChatMessage_v1_16) {
                 ChatMessage_v1_16 c = (ChatMessage_v1_16) chatMessage;
                 clonedChatMessage = new ChatMessage_v1_16(c.getChatContent(), c.getType(), c.getSenderUUID());
@@ -269,6 +270,10 @@ public class PacketEventsOutMessagePacketHelper {
         }, WrapperPlayServerActionBar::new, p -> new WrapperPlayServerActionBar(p.getActionBarText())));
     }
     
+    private static byte[] copySignature(byte[] signature) {
+        return signature == null ? null : Arrays.copyOf(signature, signature.length);
+    }
+
     public static class PacketEventsHandler<PacketTyped extends PacketWrapper<?>> {
 
         private final MessagePacketHandler<ProtocolPacketEvent, PacketWrapper<?>> handler;
