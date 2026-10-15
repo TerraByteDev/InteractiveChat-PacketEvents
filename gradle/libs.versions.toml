@@ -10,7 +10,7 @@ bytebuddy = "1.18.4"
 
 adventure = "5.2.0"
 
-lombok="1.18.44"
+lombok="1.18.48"
 shadow="9.3.1"
 properties = "2.5.7"
 
