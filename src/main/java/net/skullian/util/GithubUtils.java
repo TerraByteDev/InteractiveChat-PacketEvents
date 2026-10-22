@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -27,11 +28,15 @@ public class GithubUtils {
     // https://docs.github.com/en/rest/commits/commits#compare-two-commits
     private static final String API_COMPARE = API_BASE + "TerraByteDev/InteractiveChat-PacketEvents/compare/%s...%s";
 
+    private static final int TIMEOUT_MILLIS = 5000;
+
     private GithubUtils() {}
 
     public static GithubBuildInfo lookupLatestRelease() throws IOException {
         URL url = new URL(API_LATEST_RELEASE);
         HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+        https.setConnectTimeout(TIMEOUT_MILLIS);
+        https.setReadTimeout(TIMEOUT_MILLIS);
         final int responseCode = https.getResponseCode();
 
         if (isSuccessfulResponse(responseCode)) {
@@ -53,6 +58,8 @@ public class GithubUtils {
     public static GitHubStatusLookup compare(@NotNull String base, @NotNull String head) throws IOException {
         URL url = new URL(String.format(API_COMPARE, base, head));
         HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+        https.setConnectTimeout(TIMEOUT_MILLIS);
+        https.setReadTimeout(TIMEOUT_MILLIS);
         final int responseCode = https.getResponseCode();
 
         if (isSuccessfulResponse(responseCode)) {
@@ -73,6 +80,30 @@ public class GithubUtils {
         int aheadBy = json.get("ahead_by").getAsInt();
         int behindBy = json.get("behind_by").getAsInt();
         return new GitHubStatusLookup(status, status == GitHubStatus.AHEAD ? aheadBy : behindBy);
+    }
+
+    public static GitHubStatusLookup compareVersions(@NotNull String base, @NotNull String head) {
+        int[] baseParts;
+        int[] headParts;
+        try {
+            baseParts = parseVersion(base);
+            headParts = parseVersion(head);
+        } catch (NumberFormatException error) {
+            return new GitHubStatusLookup(GitHubStatus.UNKNOWN, 0);
+        }
+
+        for (int i = 0; i < Math.max(baseParts.length, headParts.length); i++) {
+            int basePart = i < baseParts.length ? baseParts[i] : 0;
+            int headPart = i < headParts.length ? headParts[i] : 0;
+            if (basePart != headPart) return new GitHubStatusLookup(headPart > basePart ? GitHubStatus.AHEAD : GitHubStatus.BEHIND, 0);
+        }
+
+        return new GitHubStatusLookup(GitHubStatus.IDENTICAL, 0);
+    }
+
+    private static int[] parseVersion(String version) {
+        String numeric = version.replaceFirst("^v", "").split("[^0-9.]", 2)[0];
+        return Arrays.stream(numeric.split("\\.")).mapToInt(Integer::parseInt).toArray();
     }
 
     private static boolean isSuccessfulResponse(int code) {

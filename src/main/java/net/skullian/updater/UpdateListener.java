@@ -15,16 +15,16 @@ public class UpdateListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission("interactivechatpacketevents.checkupdate")) return;
+
         Scheduler.runTaskLaterAsynchronously(InteractiveChatPacketEvents.instance, () -> {
-            Player player = event.getPlayer();
-            if (player.hasPermission("interactivechatpacketevents.checkupdate")) {
-                checkUpdate(player);
-            }
+            if (player.isOnline()) checkUpdate(player);
         }, 100);
     }
 
     @EventHandler
     public void onStart(ServerLoadEvent event) {
-        checkUpdate(Bukkit.getConsoleSender());
+        Scheduler.runTaskAsynchronously(InteractiveChatPacketEvents.instance, () -> checkUpdate(Bukkit.getConsoleSender()));
     }
 }
