@@ -136,8 +136,6 @@ public class PacketEventsOutMessagePacketHelper {
             Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getMessage()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
-            if (InteractiveChat.chatPreviewRemoveClickAndHover) component = ComponentStyling.stripEvents(component);
-
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
             String json = legacyRGB ? InteractiveChatComponentSerializer.legacyGson().serialize(component) : InteractiveChatComponentSerializer.gson().serialize(component);
             boolean longerThanMaxLength = InteractiveChat.sendOriginalIfTooLong && json.length() > InteractiveChat.packetStringMaxLength;
