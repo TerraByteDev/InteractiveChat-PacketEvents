@@ -49,7 +49,7 @@ public class PacketEventsOutMessagePacketHelper {
     private static void initializeMessagePacketHandlers() {
         PACKET_HANDLERS.put(PacketType.Play.Server.DISGUISED_CHAT, new PacketEventsHandler<>(event -> InteractiveChat.chatListener, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getMessage(), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getMessage()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
@@ -81,7 +81,7 @@ public class PacketEventsOutMessagePacketHelper {
                 default -> null;
             };
 
-            Component component = type.convertFrom(unsignedContent == null ? chatMessage.getChatContent() : unsignedContent, player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(unsignedContent == null ? chatMessage.getChatContent() : unsignedContent));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
@@ -116,7 +116,7 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.CHAT_PREVIEW_PACKET, new PacketEventsHandler<>(event -> InteractiveChat.chatListener, event -> ICPlayerFactory.getICPlayer((Player) event.getPlayer()), (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getMessage().orElse(net.kyori.adventure.text.Component.empty()), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getMessage().orElse(net.kyori.adventure.text.Component.empty())));
             return new PacketAccessorResult(component, type, 0, true);
         }, (packet, component, type, field, sender) -> {
             if (InteractiveChat.chatPreviewRemoveClickAndHover) component = ComponentStyling.stripEvents(component);
@@ -133,7 +133,7 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.SYSTEM_CHAT_MESSAGE, new PacketEventsHandler<>(event -> InteractiveChat.chatListener, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getMessage(), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getMessage()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             if (InteractiveChat.chatPreviewRemoveClickAndHover) component = ComponentStyling.stripEvents(component);
@@ -150,7 +150,7 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.SET_TITLE_TEXT, new PacketEventsHandler<>(event -> InteractiveChat.titleListener, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getTitle(), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getTitle()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
@@ -165,7 +165,7 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.SET_TITLE_SUBTITLE, new PacketEventsHandler<>(event -> InteractiveChat.titleListener, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getSubtitle(), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getSubtitle()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();
@@ -180,7 +180,7 @@ public class PacketEventsOutMessagePacketHelper {
 
         PACKET_HANDLERS.put(PacketType.Play.Server.ACTION_BAR, new PacketEventsHandler<>(event -> InteractiveChat.titleListener, (packet, player) -> {
             ChatComponentType type = ChatComponentType.NativeAdventureComponent;
-            Component component = type.convertFrom(packet.getActionBarText(), player);
+            Component component = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(packet.getActionBarText()));
             return new PacketAccessorResult(component, type, 0, false);
         }, (packet, component, type, field, sender) -> {
             boolean legacyRGB = InteractiveChat.version.isLegacyRGB();

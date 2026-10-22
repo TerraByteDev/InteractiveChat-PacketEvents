@@ -20,7 +20,6 @@ import com.loohp.interactivechat.platform.packets.PlatformPlayServerTabCompleteP
 import com.loohp.interactivechat.utils.ChatComponentType;
 import com.loohp.interactivechat.utils.MCVersion;
 import com.mojang.brigadier.suggestion.Suggestions;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.skullian.platform.packets.PacketEventsPlayServerCustomChatCompletionPacket;
 import net.skullian.platform.packets.PacketEventsPlayServerSystemChatPacket;
 import net.skullian.platform.packets.PacketEventsPlayServerTabCompletePacket;
@@ -38,7 +37,7 @@ public class PacketEventsPacketCreatorProvider implements PlatformPacketCreatorP
         WrapperPlayServerTabComplete.CommandRange commandRange = new WrapperPlayServerTabComplete.CommandRange(mojangSuggestions.getRange().getStart(), mojangSuggestions.getRange().getEnd());
 
         List<WrapperPlayServerTabComplete.CommandMatch> commandMatches = mojangSuggestions.getList().stream()
-                .map((m) -> new WrapperPlayServerTabComplete.CommandMatch(m.getText(), m.getTooltip() == null ? null : GsonComponentSerializer.gson().deserialize(ChatComponentType.IChatBaseComponent.toJsonString(m.getTooltip(), null)))).collect(Collectors.toList());
+                .map((m) -> new WrapperPlayServerTabComplete.CommandMatch(m.getText(), m.getTooltip() == null ? null : PacketEventsComponentUtils.deserializePacketEventsComponent(ChatComponentType.IChatBaseComponent.toJsonString(m.getTooltip(), null)))).collect(Collectors.toList());
 
         return new PacketEventsPlayServerTabCompletePacket(new WrapperPlayServerTabComplete(id, commandRange, commandMatches));
     }

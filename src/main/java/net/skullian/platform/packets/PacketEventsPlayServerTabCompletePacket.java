@@ -5,11 +5,13 @@ import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerTa
 import com.loohp.interactivechat.objectholders.CommandSuggestion;
 import com.loohp.interactivechat.platform.packets.PlatformPlayServerTabCompletePacket;
 import com.loohp.interactivechat.utils.ChatComponentType;
+import com.loohp.interactivechat.utils.InteractiveChatComponentSerializer;
 import com.mojang.brigadier.Message;
 import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import net.kyori.adventure.text.Component;
+import net.skullian.util.PacketEventsComponentUtils;
 
 import java.util.stream.Collectors;
 
@@ -35,7 +37,7 @@ public class PacketEventsPlayServerTabCompletePacket extends PlatformPlayServerT
     }
 
     private static Message c(Component component) {
-        com.loohp.interactivechat.libs.net.kyori.adventure.text.Component icComponent = ChatComponentType.NativeAdventureComponent.convertFrom(component, null);
+        com.loohp.interactivechat.libs.net.kyori.adventure.text.Component icComponent = InteractiveChatComponentSerializer.gson().deserialize(PacketEventsComponentUtils.serializePacketEventsComponent(component));
         return (Message) ChatComponentType.IChatBaseComponent.convertTo(icComponent, false);
     }
 
