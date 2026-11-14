@@ -12,7 +12,7 @@ adventure = "5.2.0"
 
 lombok="1.18.44"
 shadow="9.3.1"
-properties = "2.5.7"
+properties = "4.0.1"
 
 [libraries]
 packetevents = { module = "com.github.retrooper:packetevents-spigot", version.ref = "packetevents" }
