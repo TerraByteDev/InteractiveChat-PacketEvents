@@ -11,7 +11,7 @@ bytebuddy = "1.18.14"
 adventure = "5.2.0"
 
 lombok="1.18.48"
-shadow="9.3.1"
+shadow="9.6.1"
 properties = "4.0.1"
 
 [libraries]
